@@ -41,6 +41,7 @@ public class TicTacToeServer {
                 byte[] fileBytes = Files.readAllBytes(file.toPath());
                 String contentType = getContentType(path);
                 exchange.getResponseHeaders().set("Content-Type", contentType);
+                exchange.getResponseHeaders().set("Cache-Control", "no-cache");
                 exchange.sendResponseHeaders(200, fileBytes.length);
                 OutputStream os = exchange.getResponseBody();
                 os.write(fileBytes);
@@ -55,12 +56,16 @@ public class TicTacToeServer {
         }
         
         private String getContentType(String path) {
-            if(path.endsWith(".html")) return "text/html";
-            if(path.endsWith(".css")) return "text/css";
-            if(path.endsWith(".js")) return "application/javascript";
-            if(path.endsWith(".json")) return "application/json";
-            return "text/plain";
-        }
+    if(path.endsWith(".html")) return "text/html; charset=utf-8";
+    if(path.endsWith(".css")) return "text/css; charset=utf-8";
+    if(path.endsWith(".js")) return "application/javascript; charset=utf-8";
+    if(path.endsWith(".json")) return "application/json; charset=utf-8";
+    if(path.endsWith(".png")) return "image/png";
+    if(path.endsWith(".jpg") || path.endsWith(".jpeg")) return "image/jpeg";
+    if(path.endsWith(".gif")) return "image/gif";
+    if(path.endsWith(".svg")) return "image/svg+xml";
+    return "text/plain; charset=utf-8";
+}
     }
     
     static class JoinGameHandler implements HttpHandler {
